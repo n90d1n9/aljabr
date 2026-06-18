@@ -50,6 +50,7 @@ public final class DefaultTensor implements Tensor {
     @Override public Tensor zerosLike()              { return backend.zerosLike(this); }
     @Override public Tensor sqrt()                   { return backend.sqrt(this); }
     @Override public Tensor relu()                   { return backend.relu(this); }
+    @Override public Tensor gelu()                   { return backend.gelu(this); }
     @Override public Tensor sigmoid()                { return backend.sigmoid(this); }
     @Override public Tensor tanh()                   { return backend.tanh(this); }
     @Override public Tensor log()                    { return backend.log(this); }
@@ -60,6 +61,38 @@ public final class DefaultTensor implements Tensor {
     @Override public Tensor squeeze()                { return backend.squeeze(this); }
     @Override public Tensor transpose()              { return backend.transpose(this); }
     @Override public Tensor transpose(int d0, int d1){ return backend.transpose(this, d0, d1); }
+    @Override public Tensor softmax(int dim)         { return backend.softmax(this, dim); }
+    @Override public Tensor logSoftmax(int dim)      { return backend.logSoftmax(this, dim); }
+    @Override public Tensor mean(int dim, boolean keepDim) { return backend.mean(this, dim, keepDim); }
+    @Override public Tensor sum()                    { return backend.sum(this); }
+    @Override public Tensor sum(int dim, boolean keepDim) { return backend.sum(this, dim, keepDim); }
+    @Override public java.util.List<Tensor> split(int axis, int parts) { return backend.split(this, axis, parts); }
+    @Override public Tensor layerNorm(long[] normalizedShape, Tensor weight, Tensor bias, float eps) {
+        return backend.layerNorm(this, normalizedShape, weight, bias, eps);
+    }
+    @Override public Tensor rmsNorm(Tensor weight, float eps) { return backend.rmsNorm(this, weight, eps); }
+    @Override public Tensor batchNorm(Tensor weight, Tensor bias, Tensor runningMean, Tensor runningVar, boolean training, float momentum, float eps) {
+        return backend.batchNorm(this, weight, bias, runningMean, runningVar, training, momentum, eps);
+    }
+    @Override public Tensor conv2d(Tensor weight, Tensor bias, int stride, int padding, int dilation, int groups) {
+        return backend.conv2d(this, weight, bias, stride, padding, dilation, groups);
+    }
+    @Override public Tensor maxPool2d(int kernelSize, int stride, int padding) {
+        return backend.maxPool2d(this, kernelSize, stride, padding);
+    }
+    @Override public Tensor adaptiveAvgPool2d(int outputH, int outputW) {
+        return backend.adaptiveAvgPool2d(this, outputH, outputW);
+    }
+    @Override public Tensor dropout(float p, boolean training) {
+        return backend.dropout(this, p, training);
+    }
+    @Override public Tensor attention(Tensor K, Tensor V) {
+        return backend.attention(this, K, V);
+    }
+    @Override public Tensor embedding(Tensor weight, long paddingIdx) {
+        return backend.embedding(weight, this, paddingIdx);
+    }
+
     @Override public long numel()                    { return shape.numel(); }
     @Override public float item()                    { return 0f; }
     @Override public void backward()                 {}

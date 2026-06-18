@@ -4,6 +4,7 @@ import tech.kayys.aljabr.core.backend.ComputeBackend;
 import tech.kayys.aljabr.core.tensor.*;
 import tech.kayys.aljabr.core.memory.*;
 import java.lang.foreign.ValueLayout;
+import java.lang.foreign.MemorySegment;
 import java.util.List;
 
 public final class CpuBackend implements ComputeBackend {
@@ -225,6 +226,62 @@ public final class CpuBackend implements ComputeBackend {
     @Override public Tensor squeeze(Tensor a)  { throw new UnsupportedOperationException(TODO); }
     @Override public Tensor transpose(Tensor a){ throw new UnsupportedOperationException(TODO); }
     @Override public Tensor transpose(Tensor a, int d0, int d1) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor gelu(Tensor a) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor softmax(Tensor a, int dim) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor logSoftmax(Tensor a, int dim) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor mean(Tensor a, int dim, boolean keepDim) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor sum(Tensor a) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor sum(Tensor a, int dim, boolean keepDim) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor max(Tensor a) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor layerNorm(Tensor input, long[] normalizedShape, Tensor weight, Tensor bias, float eps) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor rmsNorm(Tensor input, Tensor weight, float eps) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor batchNorm(Tensor input, Tensor weight, Tensor bias, Tensor runningMean, Tensor runningVar, boolean training, float momentum, float eps) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor conv2d(Tensor input, Tensor weight, Tensor bias, int stride, int padding, int dilation, int groups) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor maxPool2d(Tensor input, int kernelSize, int stride, int padding) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor adaptiveAvgPool2d(Tensor input, int outputH, int outputW) { throw new UnsupportedOperationException(TODO); }
+    @Override public Tensor dropout(Tensor input, float p, boolean training) { throw new UnsupportedOperationException(TODO); }
+
+    @Override
+    public Tensor embedding(Tensor weight, Tensor input, long paddingIdx) {
+        long[] inputDims = input.shape().dims();
+        long vocabSize = weight.shape().dim(0);
+        long embeddingDim = weight.shape().dim(1);
+
+        long[] outputDims = new long[inputDims.length + 1];
+        System.arraycopy(inputDims, 0, outputDims, 0, inputDims.length);
+        outputDims[inputDims.length] = embeddingDim;
+
+        long numElements = input.numel();
+        CpuBuffer outBuf = new CpuBuffer(numElements * embeddingDim * 4);
+        var sw = ((DefaultTensor) weight).buffer().segment();
+        var si = ((DefaultTensor) input).buffer().segment();
+        var so = outBuf.segment();
+
+        DType inputDType = input.dtype();
+
+        for (long i = 0; i < numElements; i++) {
+            long idx;
+            if (inputDType == DType.I32) {
+                idx = si.get(ValueLayout.JAVA_INT, i * 4);
+            } else if (inputDType == DType.I8) {
+                idx = si.get(ValueLayout.JAVA_BYTE, i);
+            } else {
+                idx = (long) si.get(ValueLayout.JAVA_FLOAT, i * 4);
+            }
+
+            long outOffset = i * embeddingDim * 4;
+            if (idx == paddingIdx || idx < 0 || idx >= vocabSize) {
+                for (long j = 0; j < embeddingDim; j++) {
+                    so.set(ValueLayout.JAVA_FLOAT, outOffset + j * 4, 0f);
+                }
+            } else {
+                long weightOffset = idx * embeddingDim * 4;
+                MemorySegment.copy(sw, weightOffset, so, outOffset, embeddingDim * 4);
+            }
+        }
+
+        return new DefaultTensor(new Shape(outputDims), DType.F32, DeviceType.CPU, outBuf, this);
+    }
 
     @Override
     public long numel(Tensor a) {

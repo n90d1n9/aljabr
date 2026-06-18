@@ -93,6 +93,7 @@ public interface Tensor {
 
     // Common operations
     Tensor relu();
+    Tensor gelu();
     Tensor sigmoid();
     Tensor tanh();
     Tensor log();
@@ -103,6 +104,21 @@ public interface Tensor {
     Tensor squeeze();
     Tensor transpose();
     Tensor transpose(int dim0, int dim1);
+    Tensor softmax(int dim);
+    Tensor logSoftmax(int dim);
+    Tensor mean(int dim, boolean keepDim);
+    Tensor sum();
+    Tensor sum(int dim, boolean keepDim);
+    java.util.List<Tensor> split(int axis, int parts);
+    Tensor layerNorm(long[] normalizedShape, Tensor weight, Tensor bias, float eps);
+    Tensor rmsNorm(Tensor weight, float eps);
+    Tensor batchNorm(Tensor weight, Tensor bias, Tensor runningMean, Tensor runningVar, boolean training, float momentum, float eps);
+    Tensor conv2d(Tensor weight, Tensor bias, int stride, int padding, int dilation, int groups);
+    Tensor maxPool2d(int kernelSize, int stride, int padding);
+    Tensor adaptiveAvgPool2d(int outputH, int outputW);
+    Tensor dropout(float p, boolean training);
+    Tensor attention(Tensor K, Tensor V);
+    Tensor embedding(Tensor weight, long paddingIdx);
 
     long numel();
 }

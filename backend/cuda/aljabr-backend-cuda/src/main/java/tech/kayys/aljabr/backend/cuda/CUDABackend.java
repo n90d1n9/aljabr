@@ -181,6 +181,81 @@ public final class CUDABackend implements ComputeBackend {
     }
 
     @Override
+    public Tensor gelu(Tensor a) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor softmax(Tensor a, int dim) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor logSoftmax(Tensor a, int dim) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor mean(Tensor a, int dim, boolean keepDim) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor sum(Tensor a) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor sum(Tensor a, int dim, boolean keepDim) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor max(Tensor a) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor layerNorm(Tensor input, long[] normalizedShape, Tensor weight, Tensor bias, float eps) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor rmsNorm(Tensor input, Tensor weight, float eps) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor batchNorm(Tensor input, Tensor weight, Tensor bias, Tensor runningMean, Tensor runningVar, boolean training, float momentum, float eps) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor conv2d(Tensor input, Tensor weight, Tensor bias, int stride, int padding, int dilation, int groups) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor maxPool2d(Tensor input, int kernelSize, int stride, int padding) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor adaptiveAvgPool2d(Tensor input, int outputH, int outputW) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor dropout(Tensor input, float p, boolean training) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
+    public Tensor embedding(Tensor weight, Tensor input, long paddingIdx) {
+        throw new UnsupportedOperationException(TODO);
+    }
+
+    @Override
     public long numel(Tensor a) {
         throw new UnsupportedOperationException(TODO);
     }

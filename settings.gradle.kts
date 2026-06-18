@@ -27,6 +27,8 @@ include("core:aljabr-provider-routing")
 include("core:aljabr-tensor")
 include("core:aljabr-core")
 include("core:aljabr-error-code")
+include("core:aljabr-nn")
+
 
 //include("examples:jupyter-deps")
 //include("integration:aljabr-jupyter-kernel")
